@@ -1,0 +1,398 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Omenabyte :: Creative Prompt Engineer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom global styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0A0A0A; /* Near black */
+            color: #E0E0E0; /* Light gray for text */
+            overflow-x: hidden;
+        }
+
+        .font-vt323 {
+            font-family: 'VT323', monospace;
+        }
+
+        /* Neon Colors */
+        .neon-teal { color: #00FFA3; }
+        .neon-magenta { color: #FF00FF; }
+        .neon-yellow { color: #FFFF00; }
+        .shadow-neon-teal { box-shadow: 0 0 5px #00FFA3, 0 0 10px #00FFA3, 0 0 15px #00FFA3; }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #1A1A1A; }
+        ::-webkit-scrollbar-thumb { background: #00FFA3; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #00cc82; }
+
+        /* Glitchy text animation */
+        .glitch-text-container { display: inline-block; }
+
+        /* Preloader styles */
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #0A0A0A;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease-out;
+        }
+        #preloader-text {
+            font-family: 'VT323', monospace;
+            font-size: 1.5rem;
+            text-align: center;
+        }
+
+        /* Pulsing animation for buttons */
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 5px #00FFA3, 0 0 10px #00FFA3; }
+            50% { box-shadow: 0 0 10px #00FFA3, 0 0 20px #00FFA3; }
+        }
+        .btn-pulse { animation: pulse-glow 2.5s infinite ease-in-out; }
+        
+        /* Background animated grid */
+        .grid-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        .grid-bg::before {
+            content: "";
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background-image: 
+                linear-gradient(0deg, transparent 24%, rgba(0, 255, 163, 0.05) 25%, rgba(0, 255, 163, 0.05) 26%, transparent 27%, transparent 74%, rgba(0, 255, 163, 0.05) 75%, rgba(0, 255, 163, 0.05) 76%, transparent 77%, transparent),
+                linear-gradient(90deg, transparent 24%, rgba(0, 255, 163, 0.05) 25%, rgba(0, 255, 163, 0.05) 26%, transparent 27%, transparent 74%, rgba(0, 255, 163, 0.05) 75%, rgba(0, 255, 163, 0.05) 76%, transparent 77%, transparent);
+            background-size: 50px 50px;
+            animation: bg-pan 120s linear infinite;
+            opacity: 0.3;
+        }
+        @keyframes bg-pan {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 100% 100%; }
+        }
+
+        /* Console Section Styling */
+        .console-section {
+            border: 1px solid rgba(0, 255, 163, 0.2);
+            background-color: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(5px);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-radius: 0.5rem;
+        }
+        
+        /* Custom input/select styles */
+        textarea, select, input[type="text"] {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(0, 255, 163, 0.2);
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            color: #E0E0E0;
+            transition: border-color 0.3s ease;
+        }
+        textarea:focus, select:focus, input[type="text"]:focus {
+            outline: none;
+            border-color: #00FFA3;
+        }
+        textarea::placeholder, input[type="text"]::placeholder {
+            color: rgba(224, 224, 224, 0.4);
+        }
+        
+        /* Loading animation for result box */
+        .result-loading::after {
+            content: '▋';
+            animation: blink 1s step-end infinite;
+        }
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <div class="grid-bg"></div>
+
+    <div id="preloader">
+        <div id="preloader-text" class="neon-teal"></div>
+    </div>
+
+    <div id="main-content" class="container mx-auto px-4 py-8 opacity-0 transition-opacity duration-1000">
+        
+        <header class="text-center mb-12">
+            <h1 class="font-vt323 text-4xl md:text-6xl neon-teal glitch-text-container" data-text="Creative Prompt Engineer"></h1>
+            <p class="font-vt323 text-xl neon-magenta glitch-text-container" data-text="A Service by Omenabyte"></p>
+        </header>
+
+        <main class="grid md:grid-cols-5 gap-8">
+            <!-- Left Panel: Input -->
+            <div class="md:col-span-2 console-section">
+                <h2 class="font-vt323 text-3xl neon-yellow mb-4">&gt; INPUT_MATRIX_</h2>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label for="user-input" class="font-vt323 text-lg neon-teal block mb-2">Describe your creative task:</label>
+                        <textarea id="user-input" class="w-full h-32 text-sm" placeholder="e.g., 'A blog post about sustainable fashion for millennials' or 'A fantasy short story about a time-traveling librarian'">Create a compelling Instagram caption for a new eco-friendly coffee shop opening downtown.</textarea>
+                    </div>
+                    
+                    <div>
+                        <label for="content-type" class="font-vt323 text-lg neon-teal block mb-2">Content Type:</label>
+                        <select id="content-type" class="w-full text-sm">
+                            <option>Blog Post</option>
+                            <option selected>Social Media</option>
+                            <option>Marketing Copy</option>
+                            <option>Short Story</option>
+                            <option>Email Campaign</option>
+                            <option>Video Script</option>
+                            <option>Poem</option>
+                            <option>Website Designer</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="tone" class="font-vt323 text-lg neon-teal block mb-2">Tone:</label>
+                        <select id="tone" class="w-full text-sm">
+                            <option>Professional</option>
+                            <option selected>Friendly</option>
+                            <option>Witty</option>
+                            <option>Inspirational</option>
+                            <option>Urgent</option>
+                            <option>Authoritative</option>
+                            <option>Humorous</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="audience" class="font-vt323 text-lg neon-teal block mb-2">Target Audience:</label>
+                        <input type="text" id="audience" class="w-full text-sm" placeholder="e.g., Gen Z, professionals" value="Urban professionals, ages 25-40">
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <button id="generate-btn" class="w-full bg-teal-500 hover:bg-teal-400 text-black font-vt323 text-2xl px-8 py-3 rounded-md border-2 border-teal-300 shadow-neon-teal btn-pulse transition-all duration-300 transform hover:scale-105">
+                        [ GENERATE ]
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right Panel: Output -->
+            <div class="md:col-span-3 console-section">
+                <h2 class="font-vt323 text-3xl neon-yellow mb-4">&gt; OPTIMIZED_PROMPT_</h2>
+                <div id="result-box" class="bg-black/30 p-4 rounded-md min-h-[28rem] font-mono text-sm leading-relaxed whitespace-pre-wrap">
+                    Your generated prompt will appear here...
+                </div>
+                <div class="mt-4">
+                     <button id="copy-btn" class="bg-transparent hover:bg-teal-900/50 text-teal-400 font-vt323 text-lg px-6 py-2 rounded-md border border-teal-500/50 transition-all duration-300">
+                        [ COPY ]
+                    </button>
+                    <span id="copy-notification" class="ml-4 text-xs neon-teal hidden">PROMPT COPIED TO CLIPBOARD_</span>
+                </div>
+            </div>
+        </main>
+
+        <footer class="text-center py-12 mt-8">
+            <p class="font-vt323 text-lg neon-teal mb-4" id="footer-cursor">&gt; Omenabyte Digital Solutions_</p>
+            <p class="text-xs text-gray-500">Crafting the future of digital interaction. &copy; <span id="year"></span> Omenabyte.</p>
+        </footer>
+    </div>
+
+    <script>
+        // --- DOM Elements ---
+        const preloader = document.getElementById('preloader');
+        const preloaderText = document.getElementById('preloader-text');
+        const mainContent = document.getElementById('main-content');
+        const generateBtn = document.getElementById('generate-btn');
+        const copyBtn = document.getElementById('copy-btn');
+        const resultBox = document.getElementById('result-box');
+        const copyNotification = document.getElementById('copy-notification');
+        
+        // --- Preloader Logic ---
+        const preloaderMessages = [
+            "INITIALIZING OMENABYTE TERMINAL...",
+            "CALIBRATING CREATIVE CORE...",
+            "LOADING SEMANTIC_MODELS.DLL...",
+            "DECOMPILING CLICHES...",
+            "ENCRYPTING IDEAS...",
+            "SYNCHRONIZING WITH THE AETHER...",
+            "CONNECTION ESTABLISHED.",
+            "WELCOME, CREATIVE ENGINEER."
+        ];
+        let currentMessageIndex = 0;
+
+        function showNextMessage() {
+            if (currentMessageIndex < preloaderMessages.length) {
+                scrambleText(preloaderText, preloaderMessages[currentMessageIndex], 20, () => {
+                    currentMessageIndex++;
+                    setTimeout(showNextMessage, currentMessageIndex === preloaderMessages.length - 1 ? 1000 : 500);
+                });
+            } else {
+                preloader.style.opacity = '0';
+                setTimeout(() => {
+                    preloader.style.display = 'none';
+                    mainContent.style.opacity = '1';
+                    initTextGlitching();
+                }, 500);
+            }
+        }
+
+        // --- Text Scramble/Glitch Effect ---
+        function scrambleText(element, finalText, speed = 50, callback) {
+            let originalText = element.dataset.text || finalText;
+            if (finalText && !element.dataset.text) element.dataset.text = finalText;
+
+            let iteration = 0;
+            const letters = "!<>-_\\/[]{}—=+*^?#________";
+            let interval = setInterval(() => {
+                if (!element) {
+                    clearInterval(interval);
+                    return;
+                }
+                element.innerText = originalText
+                    .split("")
+                    .map((letter, index) => {
+                        if (index < iteration) {
+                            return finalText[index];
+                        }
+                        return letters[Math.floor(Math.random() * letters.length)];
+                    })
+                    .join("");
+
+                if (iteration >= finalText.length) {
+                    clearInterval(interval);
+                    element.innerText = finalText;
+                    if (callback) callback();
+                }
+                iteration += 1 / 2;
+            }, speed);
+        }
+
+        function initTextGlitching() {
+            document.querySelectorAll('.glitch-text-container').forEach(el => {
+                scrambleText(el, el.dataset.text, 30);
+            });
+        }
+
+        // --- Real-time Typing Effect ---
+        function typeOutResponse(element, text) {
+            element.innerHTML = ""; // Clear previous content
+            let charIndex = 0;
+            const intervalId = setInterval(() => {
+                if (charIndex < text.length) {
+                    element.innerHTML += text.charAt(charIndex);
+                    charIndex++;
+                } else {
+                    clearInterval(intervalId);
+                }
+            }, 15); // Typing speed is faster now
+        }
+
+        // --- Gemini API Call for Prompt Generation ---
+        async function generatePrompt() {
+            resultBox.innerHTML = "Generating your optimized prompt...";
+            resultBox.classList.add('result-loading');
+            generateBtn.disabled = true;
+            generateBtn.classList.add('opacity-50', 'cursor-not-allowed');
+
+            const userInput = document.getElementById('user-input').value;
+            const contentType = document.getElementById('content-type').value;
+            const tone = document.getElementById('tone').value;
+            const audience = document.getElementById('audience').value;
+
+            const systemPrompt = `You are an expert Creative Prompt Engineer. Your task is to take a user's simple idea and transform it into a detailed, structured, and optimized prompt for a large language model (like GPT-4 or Claude 3). The generated prompt should be clear, specific, and designed to elicit a high-quality, creative response from the AI.
+
+            **User's Request:**
+            - **Core Idea:** "${userInput}"
+            - **Content Type:** ${contentType}
+            - **Desired Tone:** ${tone}
+            - **Target Audience:** ${audience}
+
+            **Your Output:**
+            Generate a new, optimized prompt based on the user's request. Structure your output clearly. Use markdown like headers, bullet points, and bold text to make the prompt easy to read and use. Include sections for:
+            1.  **Role & Goal:** Define the persona the AI should adopt and the primary objective of the content.
+            2.  **Content Specifications:** Detail the structure, key points to include, and any specific requirements for the content type.
+            3.  **Tone & Style Guide:** Elaborate on the user's chosen tone with specific stylistic instructions.
+            4.  **Constraints & Taboos:** List any hard rules, things to avoid (like clichés or specific words), and length constraints.
+            
+            Do not generate the content itself, only the optimized prompt for generating that content.`;
+
+            let chatHistory = [{ role: "user", parts: [{ text: systemPrompt }] }];
+            const payload = { contents: chatHistory };
+            const apiKey = "AIzaSyDS-KPMt5uMrQvx0KHDVdGx6iJEdqw-D5c"; // Your API key is now here
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) throw new Error(`API Error: ${response.statusText}`);
+
+                const result = await response.json();
+                resultBox.classList.remove('result-loading');
+                
+                if (result.candidates && result.candidates.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    typeOutResponse(resultBox, text.trim());
+                } else {
+                    resultBox.textContent = "Error: No response from the creative core. The signal may be weak. Please try again.";
+                }
+            } catch (error) {
+                console.error("Error generating prompt:", error);
+                resultBox.classList.remove('result-loading');
+                resultBox.textContent = `Error: Connection to the creative core failed. ${error.message}. Please check your connection and try again.`;
+            } finally {
+                generateBtn.disabled = false;
+                generateBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+        }
+
+        // --- Event Listeners ---
+        generateBtn.addEventListener('click', generatePrompt);
+
+        copyBtn.addEventListener('click', () => {
+            const textToCopy = resultBox.textContent;
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                copyNotification.classList.remove('hidden');
+                setTimeout(() => copyNotification.classList.add('hidden'), 3000);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+                alert("Failed to copy prompt.");
+            });
+        });
+
+        // --- Footer Effects ---
+        const footerCursor = document.getElementById('footer-cursor');
+        if (footerCursor) {
+            setInterval(() => {
+                footerCursor.style.opacity = footerCursor.style.opacity === '0' ? '1' : '0';
+            }, 600);
+        }
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // --- Initializations on Load ---
+        window.onload = () => {
+            showNextMessage();
+        };
+    </script>
+</body>
+</html>
